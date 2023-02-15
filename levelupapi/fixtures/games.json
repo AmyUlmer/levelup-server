@@ -1,0 +1,41 @@
+[
+    {
+        "model": "levelupapi.game",
+        "pk": 1,
+        "fields": {
+            "game_type": 2,
+            "gamer": 1,
+            "title": "Dungeons & Dragons",
+            "min_age": 13,
+            "min_players": 2,
+            "max_players": 15
+        }
+    },
+
+    {
+        "model": "levelupapi.game",
+        "pk": 2,
+        "fields": {
+            "game_type": 1,
+            "gamer": 1,
+            "title": "Life",
+            "min_age": 10,
+            "min_players": 2,
+            "max_players": 6
+        }
+    },
+
+    {
+        "model": "levelupapi.game",
+        "pk": 2,
+        "fields": {
+            "game_type": 3,
+            "gamer": 1,
+            "title": "Caves and Chimeras",
+            "min_age": 10,
+            "min_players": 2,
+            "max_players": 8
+        }
+    }
+    
+]
