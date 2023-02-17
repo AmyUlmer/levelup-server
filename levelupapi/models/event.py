@@ -7,5 +7,5 @@ class Event(models.Model):
     location = models.CharField(max_length=150)
     date_of_event = models.DateField()
     start_time = models.TimeField()
-    attendees = models.ManyToManyField("Gamer", through="attendee")
+    attendees = models.ManyToManyField("Gamer", through="EventGamer",related_name="event_gamer")
     

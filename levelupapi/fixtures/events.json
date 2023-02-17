@@ -4,7 +4,7 @@
         "pk": 1,
         "fields": {
             "organizing_gamer": 1,
-            "game": 1,
+            "game": 2,
             "date_of_event": "2023-03-14",
             "location": "1624 S Madison",
             "start_time": "15:00"
@@ -15,7 +15,7 @@
         "pk": 2,
         "fields": {
             "organizing_gamer": 2,
-            "game": 2,
+            "game": 1,
             "date_of_event": "2023-03-24",
             "location": "1337 S Richmond",
             "start_time": "15:00"
@@ -27,7 +27,7 @@
         "fields": {
             "organizing_gamer": 1,
             "game": 3,
-            "date": "2023-04-03",
+            "date_of_event": "2023-04-03",
             "location": "4808 E 26th",
             "start_time": "10:00"
         }
