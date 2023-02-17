@@ -27,7 +27,7 @@
 
     {
         "model": "levelupapi.game",
-        "pk": 2,
+        "pk": 3,
         "fields": {
             "game_type": 3,
             "gamer": 1,
