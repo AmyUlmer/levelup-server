@@ -3,7 +3,7 @@ from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
-from levelupapi.models import Event
+from levelupapi.models import Event, Gamer, Game
 
 
 class EventView(ViewSet):
@@ -25,10 +25,42 @@ class EventView(ViewSet):
         Returns:
             Response -- JSON serialized list of game types
         """
+        
         events = Event.objects.all()
+
+        if "game" in request.query_params:
+            query = request.GET.get('game')
+            query_int = int(query)
+            events = Event.objects.all()
+            events = events.filter(game_id=query_int)
+        else:
+            events = Event.objects.all()
+
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def create(self, request):
+        """Handle POST operations
+
+        Returns
+            Response -- JSON serialized game instance
+        """
+        #getting the user that is logged in 
+        organizing_gamer = Gamer.objects.get(user=request.auth.user)
+        #retrieve game from database. make sure the game the user is trying to add with new event actually exists in database  
+        game = Game.objects.get(pk=request.data["game"])
+
+        #whichever keys are used on the request.data must match what the client is passing to the server.
+        event = Event.objects.create(
+            location=request.data["location"],
+            date_of_event=request.data["date_of_event"],
+            start_time=request.data["start_time"],
+            organizing_gamer=organizing_gamer,
+            game=game
+            
+        )
+        serializer = EventSerializer(event)
+        return Response(serializer.data)
 
 class EventSerializer(serializers.ModelSerializer):
     """JSON serializer for game types
