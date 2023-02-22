@@ -7,3 +7,7 @@ class Gamer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # Additional address field to capture from the client
     bio = models.CharField(max_length=50)
+
+    @property
+    def full_name(self):
+        return f'{self.user.first_name} {self.user.last_name}'
