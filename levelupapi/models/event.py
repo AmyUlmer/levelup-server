@@ -9,3 +9,10 @@ class Event(models.Model):
     start_time = models.TimeField()
     attendees = models.ManyToManyField("Gamer", through="EventGamer",related_name="event_gamer")
     
+    @property
+    def joined(self):
+        return self.__joined
+
+    @joined.setter
+    def joined(self, value):
+        self.__joined = value
