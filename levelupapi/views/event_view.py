@@ -4,6 +4,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
 from levelupapi.models import Event, Gamer, Game
+from rest_framework.decorators import action
 
 
 class EventView(ViewSet):
@@ -36,8 +37,16 @@ class EventView(ViewSet):
         else:
             events = Event.objects.all()
 
+        gamer = Gamer.objects.get(user=request.auth.user)
+
+        # Set the `joined` property on every event
+        for event in events:
+            # Check to see if the gamer is in the attendees list on the event
+            event.joined = gamer in event.attendees.all()
+
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
     def create(self, request):
         """Handle POST operations
@@ -83,6 +92,25 @@ class EventView(ViewSet):
         event = Event.objects.get(pk=pk)
         event.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+    
+    @action(methods=['post'], detail=True)
+    def signup(self, request, pk):
+        """Post request for a user to sign up for an event"""
+
+        gamer = Gamer.objects.get(user=request.auth.user)
+        event = Event.objects.get(pk=pk)
+        event.attendees.add(gamer)
+        return Response({'message': 'Gamer added'}, status=status.HTTP_201_CREATED)
+    
+    @action(methods=['delete'], detail=True)
+    def leave(self, request, pk):
+        """Deletes request for a user to leave an event"""
+
+        gamer = Gamer.objects.get(user=request.auth.user)
+        event = Event.objects.get(pk=pk)
+        event.attendees.remove(gamer)
+        return Response({'message': 'Gamer removed'}, status=status.HTTP_204_NO_CONTENT)
+
 
 class EventGameSerializer(serializers.ModelSerializer):
     """JSON serializer for games
@@ -98,13 +126,21 @@ class OrganizerSerializer(serializers.ModelSerializer):
         model = Gamer
         fields = ('full_name',)
 
+class AttendeeSerializer(serializers.ModelSerializer):
+    """JSON serializer for attendees
+    """
+    class Meta:
+        model = Gamer
+        fields = ('full_name',)
+
 class EventSerializer(serializers.ModelSerializer):
     """JSON serializer for game types
     """
     game = EventGameSerializer(many=False)
     organizing_gamer = OrganizerSerializer(many=False)
+    attendees = AttendeeSerializer(many=True)
 
     class Meta:
         model = Event
         fields = ('id','organizing_gamer', 'game', 'location',
-                'date_of_event', 'start_time')        
+                'date_of_event', 'start_time', 'attendees', 'joined')        
